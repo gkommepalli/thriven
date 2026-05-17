@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thriven — Enterprise Advisory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0b0d;
+  --ink2:#111318;
+  --ink3:#1a1e26;
+  --ink4:#232834;
+  --gold:#c9a84c;
+  --gold2:#e8c97a;
+  --gold3:#f5e0a0;
+  --gold-dim:rgba(201,168,76,0.12);
+  --gold-line:rgba(201,168,76,0.25);
+  --white:#f5f3ee;
+  --off:#d4cfc6;
+  --muted:#8a8070;
+  --faint:#3d3830;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--ink);color:var(--white);font-family:var(--sans);font-weight:300;line-height:1.7;overflow-x:hidden;cursor:default}
+
+/* ── NOISE OVERLAY ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.4}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;padding:0 4rem;height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid transparent;transition:all .4s var(--ease)}
+nav.scrolled{background:rgba(10,11,13,.92);backdrop-filter:blur(16px);border-bottom-color:var(--gold-line)}
+.nav-logo{font-family:var(--serif);font-size:1.6rem;font-weight:500;color:var(--gold);letter-spacing:.04em;text-decoration:none}
+.nav-logo span{color:var(--white);font-weight:300}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{font-size:.82rem;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--off);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;padding:.6rem 1.4rem;border:1px solid var(--gold-line);color:var(--gold);text-decoration:none;transition:all .2s}
+.nav-cta:hover{background:var(--gold-dim);border-color:var(--gold)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;padding:8rem 4rem 6rem;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(201,168,76,.06) 0%,transparent 70%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(201,168,76,.03) 0%,transparent 60%);pointer-events:none}
+.hero-line{position:absolute;top:0;right:25%;width:1px;height:100%;background:linear-gradient(to bottom,transparent,var(--gold-line) 20%,var(--gold-line) 80%,transparent);opacity:.4}
+.hero-content{max-width:860px;position:relative;z-index:2}
+.hero-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:2.5rem;opacity:0;animation:fadeUp .8s var(--ease) .2s forwards}
+.hero-eyebrow-line{width:40px;height:1px;background:var(--gold)}
+.hero-eyebrow span{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.hero-h1{font-family:var(--serif);font-size:clamp(3rem,6vw,5.5rem);font-weight:300;line-height:1.1;color:var(--white);margin-bottom:2rem;opacity:0;animation:fadeUp .9s var(--ease) .4s forwards}
+.hero-h1 em{font-style:italic;color:var(--gold)}
+.hero-body{font-size:1.05rem;color:var(--off);max-width:580px;line-height:1.8;margin-bottom:3rem;opacity:0;animation:fadeUp .8s var(--ease) .6s forwards}
+.hero-actions{display:flex;gap:1.5rem;flex-wrap:wrap;opacity:0;animation:fadeUp .8s var(--ease) .8s forwards}
+.btn-primary{display:inline-flex;align-items:center;gap:.8rem;padding:.9rem 2.2rem;background:var(--gold);color:var(--ink);font-size:.82rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:all .25s}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-1px)}
+.btn-primary svg{width:14px;height:14px;transition:transform .2s}
+.btn-primary:hover svg{transform:translateX(3px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:.8rem;padding:.9rem 2.2rem;border:1px solid var(--faint);color:var(--off);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:all .25s}
+.btn-ghost:hover{border-color:var(--gold-line);color:var(--gold)}
+.hero-stat-row{position:absolute;bottom:3rem;left:4rem;right:4rem;display:flex;gap:4rem;z-index:2;opacity:0;animation:fadeUp .8s var(--ease) 1s forwards}
+.hero-stat{border-left:1px solid var(--faint);padding-left:1.5rem}
+.hero-stat-num{font-family:var(--serif);font-size:2rem;font-weight:300;color:var(--gold);line-height:1}
+.hero-stat-label{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.3rem}
+
+/* ── MARQUEE ── */
+.marquee-wrap{border-top:1px solid var(--faint);border-bottom:1px solid var(--faint);padding:.9rem 0;overflow:hidden;background:var(--ink2)}
+.marquee-track{display:flex;gap:0;white-space:nowrap;animation:marquee 30s linear infinite}
+.marquee-item{display:inline-flex;align-items:center;gap:2rem;padding:0 3rem;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.marquee-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
+/* ── SECTION BASE ── */
+section{padding:7rem 4rem;position:relative}
+.section-eyebrow{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.section-eyebrow-line{width:32px;height:1px;background:var(--gold);flex-shrink:0}
+.section-eyebrow span{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.section-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.4rem);font-weight:300;line-height:1.15;color:var(--white);max-width:700px}
+.section-title em{font-style:italic;color:var(--gold)}
+
+/* ── TRUTH SECTION ── */
+.truth{background:var(--ink2);border-top:1px solid var(--faint);border-bottom:1px solid var(--faint)}
+.truth-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
+.truth-quote{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.4rem);font-weight:300;line-height:1.35;color:var(--white);font-style:italic}
+.truth-quote em{color:var(--gold);font-style:normal}
+.truth-body{display:flex;flex-direction:column;gap:1.5rem}
+.truth-p{color:var(--off);line-height:1.8;font-size:.95rem}
+.truth-p strong{color:var(--white);font-weight:500}
+
+/* ── SERVICES ── */
+.services{background:var(--ink)}
+.services-inner{max-width:1200px;margin:0 auto}
+.services-header{margin-bottom:4rem}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--faint);border:1px solid var(--faint)}
+.service-card{background:var(--ink);padding:3rem 2.5rem;position:relative;overflow:hidden;transition:background .3s}
+.service-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--ease)}
+.service-card:hover{background:var(--ink2)}
+.service-card:hover::before{transform:scaleX(1)}
+.service-num{font-family:var(--serif);font-size:3.5rem;font-weight:300;color:var(--faint);line-height:1;margin-bottom:2rem;transition:color .3s}
+.service-card:hover .service-num{color:var(--gold-dim)}
+.service-icon{width:40px;height:40px;margin-bottom:1.5rem;color:var(--gold);opacity:.6}
+.service-title{font-family:var(--serif);font-size:1.5rem;font-weight:400;color:var(--white);margin-bottom:1rem;line-height:1.2}
+.service-body{font-size:.88rem;color:var(--muted);line-height:1.8;margin-bottom:2rem}
+.service-list{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+.service-list li{font-size:.8rem;color:var(--off);padding-left:1rem;position:relative;line-height:1.6}
+.service-list li::before{content:'—';position:absolute;left:0;color:var(--gold);font-size:.7rem}
+.service-fee{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--faint);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+
+/* ── HOW IT WORKS ── */
+.process{background:var(--ink2);border-top:1px solid var(--faint)}
+.process-inner{max-width:1200px;margin:0 auto}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;margin-top:4rem}
+.process-step{position:relative;padding-top:3rem}
+.process-step::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--faint)}
+.process-step:first-child::before{background:var(--gold)}
+.step-num{font-family:var(--serif);font-size:.85rem;font-weight:300;color:var(--muted);letter-spacing:.1em;margin-bottom:1.5rem}
+.step-title{font-family:var(--serif);font-size:1.2rem;font-weight:400;color:var(--white);margin-bottom:.8rem;line-height:1.3}
+.step-body{font-size:.85rem;color:var(--muted);line-height:1.7}
+
+/* ── TRUTH CARDS ── */
+.pain{background:var(--ink);border-top:1px solid var(--faint)}
+.pain-inner{max-width:1200px;margin:0 auto}
+.pain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin-top:4rem}
+.pain-card{padding:2.5rem;background:var(--ink2);border:1px solid var(--faint);border-left:3px solid var(--gold);transition:border-left-color .3s}
+.pain-card:hover{border-left-color:var(--gold2)}
+.pain-q{font-family:var(--serif);font-size:1.2rem;font-weight:400;font-style:italic;color:var(--off);margin-bottom:1rem;line-height:1.4}
+.pain-a{font-size:.85rem;color:var(--muted);line-height:1.7}
+.pain-a strong{color:var(--white);font-weight:400}
+
+/* ── ABOUT ── */
+.about{background:var(--ink2);border-top:1px solid var(--faint)}
+.about-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:6rem;align-items:start}
+.about-visual{position:relative}
+.about-frame{aspect-ratio:3/4;background:var(--ink3);border:1px solid var(--faint);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.about-frame-inner{width:80%;text-align:center}
+.about-frame-num{font-family:var(--serif);font-size:6rem;font-weight:300;color:var(--gold);opacity:.15;line-height:1}
+.about-frame-text{font-family:var(--serif);font-size:1.2rem;font-style:italic;color:var(--muted);margin-top:1rem}
+.about-accent{position:absolute;bottom:-1rem;right:-1rem;width:80%;height:80%;border:1px solid var(--gold-line);z-index:-1}
+.about-content{padding-top:1rem}
+.about-title{font-family:var(--serif);font-size:clamp(1.8rem,3vw,2.8rem);font-weight:300;line-height:1.2;color:var(--white);margin-bottom:2rem}
+.about-title em{font-style:italic;color:var(--gold)}
+.about-body{display:flex;flex-direction:column;gap:1.2rem;margin-bottom:2.5rem}
+.about-body p{color:var(--off);font-size:.95rem;line-height:1.8}
+.about-body p strong{color:var(--white);font-weight:400}
+.about-credentials{display:flex;flex-direction:column;gap:1rem;padding-top:2rem;border-top:1px solid var(--faint)}
+.credential{display:flex;align-items:flex-start;gap:1rem;font-size:.85rem;color:var(--muted)}
+.credential-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.45rem}
+
+/* ── COACHING ── */
+.coaching{background:var(--ink);border-top:1px solid var(--faint)}
+.coaching-inner{max-width:1200px;margin:0 auto}
+.coaching-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:5rem;margin-top:4rem;align-items:center}
+.coaching-content .section-eyebrow{margin-bottom:1.5rem}
+.coaching-body{color:var(--off);font-size:.95rem;line-height:1.8;margin:2rem 0}
+.coaching-offers{display:flex;flex-direction:column;gap:1rem;margin-top:2rem}
+.coaching-offer{padding:1.5rem;background:var(--ink2);border:1px solid var(--faint);display:flex;align-items:flex-start;gap:1.5rem;transition:border-color .2s}
+.coaching-offer:hover{border-color:var(--gold-line)}
+.offer-icon{font-family:var(--serif);font-size:1.8rem;font-weight:300;color:var(--gold);line-height:1;flex-shrink:0;margin-top:-.2rem}
+.offer-title{font-size:.9rem;font-weight:500;color:var(--white);margin-bottom:.3rem}
+.offer-desc{font-size:.8rem;color:var(--muted);line-height:1.6}
+.coaching-statement{background:var(--ink3);border:1px solid var(--faint);padding:3rem;position:relative}
+.coaching-statement::before{content:'\201C';font-family:var(--serif);font-size:8rem;color:var(--gold);opacity:.1;position:absolute;top:-1rem;left:1.5rem;line-height:1}
+.coaching-quote{font-family:var(--serif);font-size:1.4rem;font-weight:300;font-style:italic;color:var(--white);line-height:1.5;position:relative;z-index:1}
+.coaching-attr{margin-top:2rem;font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+
+/* ── PLATFORM TEASER ── */
+.platform{background:var(--ink2);border-top:1px solid var(--faint)}
+.platform-inner{max-width:1200px;margin:0 auto}
+.platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-top:4rem;align-items:center}
+.platform-visual{background:var(--ink3);border:1px solid var(--faint);padding:2.5rem;font-family:'DM Mono',monospace,sans-serif}
+.platform-bar{height:2px;background:linear-gradient(to right,var(--gold),transparent);margin-bottom:2rem}
+.platform-line{display:flex;gap:1rem;margin-bottom:1rem;font-size:.75rem}
+.platform-label{color:var(--muted);min-width:140px}
+.platform-val{color:var(--gold);font-weight:400}
+.platform-val.green{color:#4ade80}
+.platform-val.red{color:#f87171}
+.platform-val.amber{color:#fbbf24}
+.platform-sep{height:1px;background:var(--faint);margin:1.5rem 0}
+.platform-tag{display:inline-flex;align-items:center;gap:.4rem;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .7rem;border:1px solid var(--faint);color:var(--muted);margin:.2rem}
+.platform-tag.active{border-color:var(--gold-line);color:var(--gold)}
+.platform-content .section-title{margin:1rem 0 2rem}
+.platform-body{color:var(--off);font-size:.95rem;line-height:1.8;margin-bottom:2rem}
+.platform-features{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.pf{font-size:.82rem;color:var(--muted);padding-left:1rem;position:relative;line-height:1.5}
+.pf::before{content:'◆';position:absolute;left:0;color:var(--gold);font-size:.4rem;top:.35rem}
+
+/* ── CTA ── */
+.cta-section{background:var(--ink);border-top:1px solid var(--faint);text-align:center;padding:8rem 4rem}
+.cta-inner{max-width:700px;margin:0 auto}
+.cta-eyebrow{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:2rem}
+.cta-eyebrow-line{width:40px;height:1px;background:var(--gold)}
+.cta-eyebrow span{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.cta-title{font-family:var(--serif);font-size:clamp(2rem,4vw,3.5rem);font-weight:300;line-height:1.15;color:var(--white);margin-bottom:1.5rem}
+.cta-title em{font-style:italic;color:var(--gold)}
+.cta-body{color:var(--off);font-size:1rem;line-height:1.8;margin-bottom:3rem}
+.cta-actions{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap}
+.cta-note{margin-top:2rem;font-size:.78rem;color:var(--muted);letter-spacing:.05em}
+
+/* ── FOOTER ── */
+footer{background:var(--ink2);border-top:1px solid var(--faint);padding:4rem;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem}
+.footer-brand .nav-logo{display:block;margin-bottom:1rem;font-size:1.4rem}
+.footer-tagline{font-size:.82rem;color:var(--muted);line-height:1.7;max-width:240px}
+.footer-col-title{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.8rem}
+.footer-links a{font-size:.82rem;color:var(--muted);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-bottom{grid-column:1/-1;border-top:1px solid var(--faint);padding-top:2rem;display:flex;justify-content:space-between;align-items:center;font-size:.72rem;color:var(--muted);letter-spacing:.05em}
+
+/* ── DIVIDER ── */
+.gold-divider{height:1px;background:linear-gradient(to right,transparent,var(--gold-line),transparent)}
+
+
+/* ── AI ENABLEMENT ── */
+.ai-enable{background:var(--ink2);border-top:1px solid var(--faint)}
+.ai-inner{max-width:1200px;margin:0 auto}
+.ai-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;margin-top:4rem;align-items:start}
+.ai-body{color:var(--off);font-size:.95rem;line-height:1.8;margin-bottom:1.2rem}
+.ai-cards{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.ai-card{padding:1.8rem;background:var(--ink);border:1px solid var(--faint);border-top:2px solid var(--gold-line);transition:border-top-color .3s}
+.ai-card:hover{border-top-color:var(--gold)}
+.ai-card-num{font-family:var(--serif);font-size:1.8rem;font-weight:300;color:var(--gold);opacity:.5;line-height:1;margin-bottom:1rem}
+.ai-card-title{font-size:.9rem;font-weight:500;color:var(--white);margin-bottom:.6rem;line-height:1.3}
+.ai-card-body{font-size:.8rem;color:var(--muted);line-height:1.7}
+.ai-truth{display:flex;align-items:center;gap:2rem;margin-top:4rem;padding:2.5rem 0;border-top:1px solid var(--faint)}
+.ai-truth-line{flex:1;height:1px;background:linear-gradient(to right,transparent,var(--gold-line))}
+.ai-truth-line:last-child{background:linear-gradient(to left,transparent,var(--gold-line))}
+.ai-truth-text{font-family:var(--serif);font-size:1.1rem;font-weight:300;font-style:italic;color:var(--off);text-align:center;line-height:1.6;max-width:700px;flex-shrink:0}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* ── MOBILE ── */
+@media(max-width:900px){
+  nav{padding:0 2rem}
+  .nav-links{display:none}
+  section{padding:5rem 2rem}
+  .hero{padding:8rem 2rem 10rem}
+  .hero-stat-row{left:2rem;right:2rem;gap:2rem;flex-wrap:wrap}
+  .truth-inner,.about-inner,.coaching-grid,.platform-grid{grid-template-columns:1fr}
+  .services-grid{grid-template-columns:1fr}
+  .process-steps{grid-template-columns:1fr 1fr}
+  .pain-grid{grid-template-columns:1fr}
+  .ai-grid{grid-template-columns:1fr}
+  .ai-cards{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr 1fr;gap:2.5rem;padding:3rem 2rem}
+  .footer-bottom{grid-column:1/-1}
+  .cta-section{padding:5rem 2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Thriven<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#services">Advisory</a></li>
+    <li><a href="#platform">Platform</a></li>
+    <li><a href="#coaching">Coaching</a></li>
+    <li><a href="#ai">AI Enablement</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Book a Call</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-line"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span>Enterprise Advisory · Global · Remote</span>
+    </div>
+    <h1 class="hero-h1">Your ERP program has<br>a $40M SI.<br><em>Who is asking<br>the hard questions?</em></h1>
+    <p class="hero-body">After 24 years inside the most complex enterprise transformations across ERP, M&A, and AI, I know exactly where programs fail. Not because of the technology. Because nobody independent is asking the questions that matter before it is too late to matter.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-primary">
+        Start a Conversation
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7h12M7 1l6 6-6 6"/></svg>
+      </a>
+      <a href="#services" class="btn-ghost">See How I Work</a>
+    </div>
+  </div>
+  <div class="hero-stat-row">
+    <div class="hero-stat">
+      <div class="hero-stat-num">24</div>
+      <div class="hero-stat-label">Years in enterprise transformation</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">3</div>
+      <div class="hero-stat-label">Divisions — Advisory · Platform · Coaching</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">100%</div>
+      <div class="hero-stat-label">Independent — no SI conflicts, ever</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">Global</div>
+      <div class="hero-stat-label">US · Canada · Remote-first</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="marquee-dot"></span>ERP Readiness Advisory</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Process Governance</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Master Data Orchestration</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>SOX Controls Mapping</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>AI Readiness Assessment</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>M&A Integration Advisory</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Career Transition Coaching</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>PE Portfolio Advisory</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>ERP Readiness Advisory</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Process Governance</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Master Data Orchestration</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>SOX Controls Mapping</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>AI Readiness Assessment</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>M&A Integration Advisory</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Career Transition Coaching</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>PE Portfolio Advisory</span>
+  </div>
+</div>
+
+<!-- TRUTH -->
+<section class="truth">
+  <div class="truth-inner">
+    <div class="reveal">
+      <p class="truth-quote">"Your SI is protecting their statement of work. Your internal team is protecting their jobs. <em>Nobody is protecting you.</em>"</p>
+    </div>
+    <div class="truth-body reveal reveal-delay-2">
+      <p class="truth-p">Every ERP program that goes over budget and under-delivers follows the same pattern. The SI delivers good slides. The steering committee hears good news. The program moves forward. And then six months before go-live, reality arrives. Undocumented processes, dirty master data, no ownership, SOD violations waiting for an auditor to find them.</p>
+      <p class="truth-p"><strong>The gap is not the technology. The gap is that nobody independent is sitting at the table asking the questions that only an outsider with no skin in the game will ask.</strong></p>
+      <p class="truth-p">That is what Thriven does. Three divisions, one purpose: give leaders the clarity, protection, and capability they cannot get from anyone with a conflict of interest.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="services-header">
+      <div class="section-eyebrow reveal">
+        <div class="section-eyebrow-line"></div>
+        <span>What We Do</span>
+      </div>
+      <h2 class="section-title reveal reveal-delay-1">Three divisions.<br><em>One foundation.</em></h2>
+    </div>
+    <div class="services-grid">
+
+      <!-- Advisory -->
+      <div class="service-card reveal">
+        <div class="service-num">01</div>
+        <svg class="service-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1">
+          <circle cx="20" cy="20" r="18"/><path d="M20 10v10l6 4"/>
+        </svg>
+        <h3 class="service-title">Enterprise Advisory</h3>
+        <p class="service-body">Independent advisory to C-suite leaders navigating ERP implementations, M&A integrations, and AI readiness programs. Fixed-fee. No delivery headcount. No conflict of interest.</p>
+        <ul class="service-list">
+          <li>Independent ERP readiness assessment: before go-live, not after</li>
+          <li>Process ownership gap analysis with named accountability</li>
+          <li>SOX controls mapping: required vs evidenced</li>
+          <li>Segregation of duties detection before your auditors find it</li>
+          <li>Master data readiness evaluation</li>
+          <li>AI automation readiness scoring</li>
+          <li>M&A integration advisory: dual-entity process profiling</li>
+          <li>PE portfolio transformation advisory</li>
+        </ul>
+        <div class="service-fee">Discovery Sprint from $12,000 · Full Engagement from $45,000 USD</div>
+      </div>
+
+      <!-- Platform -->
+      <div class="service-card reveal reveal-delay-1">
+        <div class="service-num">02</div>
+        <svg class="service-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1">
+          <rect x="4" y="4" width="14" height="14" rx="2"/><rect x="22" y="4" width="14" height="14" rx="2"/>
+          <rect x="4" y="22" width="14" height="14" rx="2"/><rect x="22" y="22" width="14" height="14" rx="2"/>
+        </svg>
+        <h3 class="service-title">Governance Platform</h3>
+        <p class="service-body">A SaaS platform that systematically captures process knowledge from the people who actually do the work, not management assumptions, producing auditable governance outputs.</p>
+        <ul class="service-list">
+          <li>Bottom-up process discovery from operational contributors</li>
+          <li>Industry blueprints: pre-loaded expected process templates</li>
+          <li>AI consolidation: gap detection, conflict flagging, SOD analysis</li>
+          <li>RACI matrix generation with human sign-off enforcement</li>
+          <li>SOX control mapping: required vs evidenced</li>
+          <li>MDM template derivation from process documentation</li>
+          <li>Enterprise readiness certification</li>
+          <li>Full audit trail: tamper-evident, regulator-ready</li>
+        </ul>
+        <div class="service-fee">Patent Pending · Early Access Available · Launching 2025</div>
+      </div>
+
+      <!-- Coaching -->
+      <div class="service-card reveal reveal-delay-2">
+        <div class="service-num">03</div>
+        <svg class="service-icon" viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M20 4C11 4 4 11 4 20s7 16 16 16 16-7 16-16S29 4 20 4z"/>
+          <path d="M20 14v6l4 4"/>
+        </svg>
+        <h3 class="service-title">Career & Mindset Coaching</h3>
+        <p class="service-body">For senior professionals navigating the AI era. Built by someone who lived the transition personally. Not a certification. Earned credibility.</p>
+        <ul class="service-list">
+          <li>From Employee to Advisor: the transition programme</li>
+          <li>AI-era positioning and personal brand rebuild</li>
+          <li>LinkedIn profile overhaul and content strategy</li>
+          <li>Mindset coaching: navigating uncertainty and staying focused</li>
+          <li>1:1 coaching packages: 6 and 12 session programmes</li>
+          <li>Group cohorts: 8 people, 8 weeks, structured curriculum</li>
+          <li>Digital course: self-paced AI-era career transition</li>
+        </ul>
+        <div class="service-fee">1:1 from $2,000 · Group Cohort from $800 · Course from $200 USD</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="process" id="process">
+  <div class="process-inner">
+    <div class="section-eyebrow reveal">
+      <div class="section-eyebrow-line"></div>
+      <span>The Advisory Approach</span>
+    </div>
+    <h2 class="section-title reveal reveal-delay-1">Clarity in four steps.<br><em>No theatrics.</em></h2>
+    <div class="process-steps">
+      <div class="process-step reveal">
+        <div class="step-num">Step 01</div>
+        <h3 class="step-title">30-Minute Conversation</h3>
+        <p class="step-body">You tell me where the program stands. I tell you what I'm hearing in that description that you may not be seeing. No commitment. Just clarity on whether the fit is right.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-1">
+        <div class="step-num">Step 02</div>
+        <h3 class="step-title">Discovery Sprint</h3>
+        <p class="step-body">Two weeks. Structured interviews with the people doing the work, not management. A gap checklist against what your program needs. Named ownership gaps. Delivered to you, not the program team.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="step-num">Step 03</div>
+        <h3 class="step-title">Full Advisory Engagement</h3>
+        <p class="step-body">Four to eight weeks. Deep process governance, master data readiness, SOX controls, SOD analysis, AI readiness scoring. An independent verdict on whether you are genuinely ready, not the SI's self-assessment.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="step-num">Step 04</div>
+        <h3 class="step-title">C-Suite Briefing & Handoff</h3>
+        <p class="step-body">A direct, honest briefing to you. Prioritised gaps with remediation owners. Evidence package ready for audit. An independent view you can use to hold your SI accountable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section class="pain" id="pain">
+  <div class="pain-inner">
+    <div class="section-eyebrow reveal">
+      <div class="section-eyebrow-line"></div>
+      <span>If Any of These Sound Familiar</span>
+    </div>
+    <h2 class="section-title reveal reveal-delay-1">The questions that keep<br><em>C-suite leaders awake.</em></h2>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <p class="pain-q">"Our SI presents great slides every two weeks, but I cannot tell if we're actually ready."</p>
+        <p class="pain-a">SI presentations are designed to protect the engagement.</strong> An independent readiness assessment gives you the view your SI cannot give you.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-1">
+        <p class="pain-q">"We're 18 months into D365 and nobody can tell me who owns the chart of accounts."</p>
+        <p class="pain-a">This is the most common single point of failure in ERP programs. <strong>Ownership gaps are not a people problem. They are a process problem</strong> with a systematic solution.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-2">
+        <p class="pain-q">"We hired ex-Big4 people internally. The program is still struggling."</p>
+        <p class="pain-a">Because the problem is not methodology. <strong>It is that nobody is asking the uncomfortable questions</strong> about what is actually owned, what is actually clean, and what will break at go-live.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-3">
+        <p class="pain-q">"We're spending $500K/month on the SI and I can feel something is wrong but I can't name it."</p>
+        <p class="pain-a">That feeling is usually right. <strong>The gap is almost always the same: process ownership, master data readiness, and controls: the three things that live outside the SI's statement of work.</strong></p>
+      </div>
+      <div class="pain-card reveal">
+        <p class="pain-q">"My auditors keep finding SOD violations after go-live. How do we stop that cycle?"</p>
+        <p class="pain-a">By mapping segregation of duties <strong>before</strong> go-live, not discovering violations in the audit. The methodology exists. The discipline is what's missing.</p>
+      </div>
+      <div class="pain-card reveal reveal-delay-1">
+        <p class="pain-q">"We want to deploy AI on top of our new ERP, but our data is still a mess."</p>
+        <p class="pain-a"><strong>AI on dirty data is just faster wrong answers.</strong> Master data readiness is the prerequisite nobody builds into the AI project plan. Until now.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-visual reveal">
+      <div class="about-frame">
+        <div class="about-frame-inner">
+          <div class="about-frame-num">24</div>
+          <div class="about-frame-text">Years of pattern recognition<br>nobody can manufacture</div>
+        </div>
+      </div>
+      <div class="about-accent"></div>
+    </div>
+    <div class="about-content reveal reveal-delay-2">
+      <div class="section-eyebrow">
+        <div class="section-eyebrow-line"></div>
+        <span>About Thriven</span>
+      </div>
+      <h2 class="about-title">Built from the wreckage.<br><em>Not from a brochure.</em></h2>
+      <div class="about-body">
+        <p>Thriven was built by someone who spent 24 years inside the world's most complex enterprise transformation programs: ERP implementations, M&A integrations, digital transformations, AI automation rollouts. Watching the same failures repeat themselves with different logos and different SI invoices.</p>
+        <p>The failures were never about the technology. They were about the same three gaps, every single time. Undocumented processes with no owners, master data nobody had defined responsibility for, and governance that existed on slides but not in practice.</p>
+        <p><strong>After 24 years of solving problems that stumped entire organisations, the question became unavoidable: if I can walk into any broken program in the world and make it work: why am I not building something of my own at the same scale?</strong></p>
+        <p>Thriven is the answer. An independent advisory practice. A governance platform built on a patented methodology. A coaching practice for professionals who are done asking permission and ready to build their own table.</p>
+        <p>Based in Canada. Operating globally. Answerable only to the quality of the work.</p>
+      </div>
+      <div class="about-credentials">
+        <div class="credential"><div class="credential-dot"></div><span>24 years across ERP, M&A, digital transformation, AI automation across multiple industries and geographies</span></div>
+        <div class="credential"><div class="credential-dot"></div><span>Served as delivery leader, program advisor, and transformation executive for global enterprises</span></div>
+        <div class="credential"><div class="credential-dot"></div><span>Deep expertise in SAP, Oracle, Microsoft D365, and Salesforce — and the governance layer beneath them all</span></div>
+        <div class="credential"><div class="credential-dot"></div><span>Governance platform (patent pending) covering process discovery, MDM orchestration, and SOX compliance</span></div>
+        <div class="credential"><div class="credential-dot"></div><span>Incorporated in Canada · 100% remote · US, Canada, and global market</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COACHING -->
+<section class="coaching" id="coaching">
+  <div class="coaching-inner">
+    <div class="section-eyebrow reveal">
+      <div class="section-eyebrow-line"></div>
+      <span>Career & Mindset Coaching</span>
+    </div>
+    <div class="coaching-grid">
+      <div class="coaching-content">
+        <h2 class="section-title reveal">For professionals who know<br><em>they are worth more than<br>the market is offering.</em></h2>
+        <p class="coaching-body reveal reveal-delay-1">The AI era is not just disrupting jobs. It is disrupting identities. Senior professionals who built 20 years of expertise are being told their experience doesn't fit a job description written by someone who has never done the work. That moment of clarity, when you realise the system is not built to recognise what you are worth, is not a crisis. It is an invitation.</p>
+        <p class="coaching-body reveal reveal-delay-1">The coaching at Thriven is not about surviving the market. It is about recognising that the people who can solve the hardest problems in the world do not need to wait for someone to hire them. They need to be pointed at what they are actually capable of building.</p>
+        <div class="coaching-offers reveal reveal-delay-2">
+          <div class="coaching-offer">
+            <div class="offer-icon">I</div>
+            <div><div class="offer-title">From Employee to Advisor</div><div class="offer-desc">A structured programme for senior leaders making the transition to independent advisory. Positioning, pricing, first clients, mindset: everything the job search never taught you.</div></div>
+          </div>
+          <div class="coaching-offer">
+            <div class="offer-icon">II</div>
+            <div><div class="offer-title">AI-Era Career Navigation</div><div class="offer-desc">For professionals navigating job search in a market that is getting harder by the month. Not cheerleading. Honest strategy, real tactics, and the mental fortitude to keep going.</div></div>
+          </div>
+          <div class="coaching-offer">
+            <div class="offer-icon">III</div>
+            <div><div class="offer-title">1:1 Executive Coaching</div><div class="offer-desc">Deep, structured, challenging. For leaders who want to build something beyond the corporate world and need a thinking partner who has made that transition.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="coaching-statement reveal reveal-delay-3">
+        <p class="coaching-quote">"When you have spent 24 years walking into the most broken, chaotic, high-stakes programs in the world and making them work, you reach a point where the only question left is: why am I still doing this for someone else's name on the door? Walk through hell like you own it. Then build something that is actually yours."</p>
+        <div class="coaching-attr">— Thriven Founding Philosophy</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- AI ENABLEMENT -->
+<section class="ai-enable" id="ai">
+  <div class="ai-inner">
+    <div class="section-eyebrow reveal">
+      <div class="section-eyebrow-line"></div>
+      <span>AI Enablement</span>
+    </div>
+    <div class="ai-grid">
+      <div class="ai-content">
+        <h2 class="section-title reveal reveal-delay-1">Most companies are spending on AI.<br><em>Very few are getting ROI from it.</em></h2>
+        <p class="ai-body reveal reveal-delay-2">The promise of AI in the enterprise is real. The results most organisations are seeing are not. Not because the technology fails. Because the foundation it needs to run on was never built. Dirty data produces confident wrong answers. Undocumented processes get automated in their broken state. AI agents make fast decisions with no human governance in place to catch what they get wrong.</p>
+        <p class="ai-body reveal reveal-delay-2">True AI ROI is not a technology problem. It is a readiness problem. And it requires the same discipline that every successful enterprise transformation requires: clean data, documented processes, defined ownership, and governance that tells the AI where to act and where to stop and ask a human.</p>
+        <p class="ai-body reveal reveal-delay-2">Thriven helps C-suite leaders build the foundation that makes AI investments deliver.</p>
+      </div>
+      <div class="ai-cards reveal reveal-delay-3">
+        <div class="ai-card">
+          <div class="ai-card-num">I</div>
+          <h4 class="ai-card-title">AI Readiness Assessment</h4>
+          <p class="ai-card-body">Which processes in your organisation are genuinely ready for AI automation, and which will fail because the data or the governance is not there yet. We give you a clear map before you spend the budget.</p>
+        </div>
+        <div class="ai-card">
+          <div class="ai-card-num">II</div>
+          <h4 class="ai-card-title">Human-in-Loop Design</h4>
+          <p class="ai-card-body">For every automated process, there is a point where a human must stay in the loop. We identify where those points are, design the governance around them, and ensure your AI deployment does not create uncontrolled risk.</p>
+        </div>
+        <div class="ai-card">
+          <div class="ai-card-num">III</div>
+          <h4 class="ai-card-title">Data Foundation for AI</h4>
+          <p class="ai-card-body">AI is only as good as the data it runs on. We assess your master data readiness, identify what needs to be cleaned and governed before AI deployment, and stop you from automating chaos at speed.</p>
+        </div>
+        <div class="ai-card">
+          <div class="ai-card-num">IV</div>
+          <h4 class="ai-card-title">AI Governance Framework</h4>
+          <p class="ai-card-body">Who owns each AI decision. What gets audited. What triggers human review. What constitutes a control failure. The governance framework that makes your AI investment defensible to a board, an auditor, or a regulator.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ai-truth reveal">
+      <div class="ai-truth-line"></div>
+      <p class="ai-truth-text">The organisations getting real ROI from AI are not the ones with the biggest AI budgets. They are the ones that did the unglamorous work first: clean data, owned processes, governed decisions. That work is what Thriven does.</p>
+      <div class="ai-truth-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM TEASER -->
+<section class="platform" id="platform">
+  <div class="platform-inner">
+    <div class="section-eyebrow reveal">
+      <div class="section-eyebrow-line"></div>
+      <span>Governance Platform · Coming 2025</span>
+    </div>
+    <div class="platform-grid">
+      <div class="platform-visual reveal">
+        <div class="platform-bar"></div>
+        <div class="platform-line"><span class="platform-label">Function</span><span class="platform-val">Procure to Pay</span></div>
+        <div class="platform-line"><span class="platform-label">Contributors</span><span class="platform-val">9 submitted</span></div>
+        <div class="platform-line"><span class="platform-label">Process maturity</span><span class="platform-val amber">2.1 / 5.0</span></div>
+        <div class="platform-line"><span class="platform-label">Gaps identified</span><span class="platform-val red">8 gaps</span></div>
+        <div class="platform-line"><span class="platform-label">SOX controls</span><span class="platform-val amber">5 missing</span></div>
+        <div class="platform-line"><span class="platform-label">SOD conflicts</span><span class="platform-val red">3 detected</span></div>
+        <div class="platform-line"><span class="platform-label">ERP readiness</span><span class="platform-val red">NOT READY</span></div>
+        <div class="platform-sep"></div>
+        <div class="platform-line"><span class="platform-label">Agent eligible</span><span class="platform-val green">14 steps (33%)</span></div>
+        <div class="platform-line"><span class="platform-label">Human required</span><span class="platform-val amber">22 steps (52%)</span></div>
+        <div class="platform-line"><span class="platform-label">Undefined</span><span class="platform-val red">6 steps (15%)</span></div>
+        <div class="platform-sep"></div>
+        <div>
+          <span class="platform-tag active">SOX Mapped</span>
+          <span class="platform-tag active">RACI Draft</span>
+          <span class="platform-tag">Owner Sign-off</span>
+          <span class="platform-tag">MDM Linked</span>
+          <span class="platform-tag">Cert Ready</span>
+        </div>
+      </div>
+      <div class="platform-content reveal reveal-delay-2">
+        <h2 class="section-title">The platform that makes the<br><em>advisory scalable.</em></h2>
+        <p class="platform-body">The Thriven Governance Platform automates what the advisory practice does manually: bottom-up process discovery, AI-driven gap detection, SOX controls mapping, RACI generation, and MDM orchestration, all in a single system with full audit trail.</p>
+        <p class="platform-body">Patent pending. Built from 24 years of watching programs fail at the same places. Available to enterprises, PE firms, and SI partners.</p>
+        <div class="platform-features">
+          <div class="pf">Bottom-up process discovery</div>
+          <div class="pf">Industry blueprint templates</div>
+          <div class="pf">AI gap & conflict detection</div>
+          <div class="pf">SOD violation detection</div>
+          <div class="pf">SOX control mapping</div>
+          <div class="pf">RACI with sign-off enforcement</div>
+          <div class="pf">MDM template derivation</div>
+          <div class="pf">Agentic readiness classification</div>
+          <div class="pf">Audit trail & evidence packs</div>
+          <div class="pf">Readiness certification</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="cta-inner">
+    <div class="cta-eyebrow reveal">
+      <div class="cta-eyebrow-line"></div>
+      <span>Start the Conversation</span>
+      <div class="cta-eyebrow-line"></div>
+    </div>
+    <h2 class="cta-title reveal reveal-delay-1">30 minutes.<br><em>No commitment.<br>Just clarity.</em></h2>
+    <p class="cta-body reveal reveal-delay-2">Tell me where your program stands. I'll tell you what I hear in that description: honestly, independently, without an agenda. If there's a fit, we'll know. If there isn't, you'll leave with a clearer picture than you arrived with.</p>
+    <div class="cta-actions reveal reveal-delay-3">
+      <a href="mailto:hello@thriven.com" class="btn-primary">
+        Book a 30-Minute Call
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 7h12M7 1l6 6-6 6"/></svg>
+      </a>
+      <a href="mailto:hello@thriven.com" class="btn-ghost">Send a Message</a>
+    </div>
+    <p class="cta-note reveal reveal-delay-4">hello@thriven.com   ·   Based in Canada   ·   Serving US, Canada & Global   ·   100% Remote</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <a href="#" class="nav-logo">Thriven<span>.</span></a>
+    <p class="footer-tagline">Enterprise advisory, governance platform, and career coaching. Built by someone who earned every insight the hard way.</p>
+  </div>
+  <div>
+    <div class="footer-col-title">Advisory</div>
+    <ul class="footer-links">
+      <li><a href="#services">ERP Readiness</a></li>
+      <li><a href="#services">Process Governance</a></li>
+      <li><a href="#services">SOX Controls</a></li>
+      <li><a href="#services">MDM Advisory</a></li>
+      <li><a href="#services">M&A Integration</a></li>
+      <li><a href="#services">PE Portfolio</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">AI Enablement</div>
+    <ul class="footer-links">
+      <li><a href="#ai">AI Readiness</a></li>
+      <li><a href="#ai">Human-in-Loop Design</a></li>
+      <li><a href="#ai">Data Foundation</a></li>
+      <li><a href="#ai">AI Governance</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Platform</div>
+    <ul class="footer-links">
+      <li><a href="#platform">Process Discovery</a></li>
+      <li><a href="#platform">Governance Engine</a></li>
+      <li><a href="#platform">MDM Templates</a></li>
+      <li><a href="#platform">Readiness Cert</a></li>
+      <li><a href="#platform">Early Access</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Coaching</div>
+    <ul class="footer-links">
+      <li><a href="#coaching">1:1 Coaching</a></li>
+      <li><a href="#coaching">Group Cohorts</a></li>
+      <li><a href="#coaching">Employee to Advisor</a></li>
+      <li><a href="#coaching">AI-Era Navigation</a></li>
+      <li><a href="#contact">Book a Call</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Thriven Inc. · Canadian Corporation · All rights reserved</span>
+    <span>Built on 24 years of earned insight   ·   Patent Pending</span>
+  </div>
+</footer>
+
+<script>
+// Nav scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 40);
+}, { passive: true });
+
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// Smooth anchor scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>
