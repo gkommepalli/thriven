@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="10" fill="#0d1733"/>
+  <g transform="translate(32 32) rotate(45)">
+    <rect x="-19" y="-19" width="38" height="38" rx="2" fill="none" stroke="#2859d8" stroke-width="3.5"/>
+  </g>
+  <text x="32" y="43" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-size="31" font-weight="800" fill="#f5f8fd">T</text>
+</svg>
